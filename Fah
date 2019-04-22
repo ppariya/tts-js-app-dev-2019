@@ -1,0 +1,301 @@
+# Template Literal
+```javascript
+console.log(`Hello! I'm a string
+continues on to next line when we press ENTER`);
+
+ console.log("string text 1\n" 
++ "string text 2");
+
+ const name = "Jimmy"
+const day = "Wednesday"
+const instructor = {
+    name: "Chris",
+    lesson: "ES6",
+    greet: function (){
+        return `Today ${instructor.name} is teaching ${instructor.lesson}.`
+    }
+}
+
+ console.log("Hello" + name + "I hope you have a great day on" //ES5 (old way)
++ day);
+
+ console.log(`Yello ${name}  hope ${day} goes well.`); //ES6, uses interpolation
+
+ console.log(`Today ${instructor.name} is teaching ${instructor.lesson}.`);
+
+ console.log(instructor.greet());
+```
+```javascript
+function foo(){
+
+     let x = true;
+
+     if (x) {
+      let usingVar = "Im using let";
+    }
+    console.log(usingVar);          //would log UNDEFINED because it is called outside & before the function containing variable usingVar
+}                                   //HOWEVER if i took away the let or variable declaration, it would be global variable and can be accessed outside of it's positioned scope
+
+ foo(); //Undefined
+```
+# Type Error
+```javascript
+const instructors = ["jimm","chris"]
+instructors = ["jim","cris"]        //because there are two of the same variables
+
+ const Teach = ["Jimmy","Chris"]
+Teach.push("Jack","Jill")
+
+
+
+ function hello(name){
+    name = name || ' Mystery Person';
+    console.log("Hello"+name+"!");
+}
+
+ hello("Bobby"); //returns HelloBobby!
+hello();        //returns Hello Mystery Person b/c name parameter is not identified, so the or (||) tells it to log Mystery Person
+
+ function hello(day, name = 'Mystery Person'){
+    name = name || ' Mystery Person';
+    console.log(`Hello ${name} is it me you're looking for`);
+}
+
+ hello("Bobby"); //returns HelloBobby!
+hello();       //returns HelloMystery Person b/c name='Mystery Person' is the default if no argument is assigned
+
+ ```
+
+ # Arrow Functions
+```javascript
+const teacher = {
+    name: "Jimmy",
+    speak: function(){
+
+       let boundFunction = function(){
+        console.log('later my name is '+ this.name); //undefined b/c of setTimeout()
+        }
+        setTimeout(boundFunction, 1000);        //setTimeout is weird b/c it effects the .this function, where as normally this.name would pull the name variable, Jimmy
+    }
+
+ };
+
+ teacher.speak();
+
+
+ const teacher = {
+    name: "Jimmy",
+    speak: function(){
+
+       let boundFunction = function(){
+        console.log('later my name is '+ this.name); 
+        }.bind(this)                    //.bind(this) tells the this.name property to ignore what setTimeout is trying to tell it, and to commit to it's name property
+        setTimeout(boundFunction, 1000);       
+    }
+
+ };
+
+ teacher.speak();
+```
+# Lexical Binding
+```javascript
+const teacher = {
+    name: "Jimmy",
+    speak: function(){
+
+       let boundFunction = () => {
+        console.log('later my name is '+ this.name);   //LEXICAL BINDING
+        }
+        setTimeout(boundFunction, 1000);        
+    }
+//Lexical Binding, logs .this method to whatever the scope is when the this function is defined, ignores setTimeout() as well
+};
+
+ teacher.speak();
+
+ ```
+
+ # MAP function
+```javascript
+let students = [
+    {name: 'Hugo'},
+    {name: 'Candace'},
+    {name: 'Taylor'}
+];
+
+ let names = students.map((student) => student.name);//map function is mapping students array into a seperate array that will be called names and display each item of students.name property
+console.log(names);
+
+ let names = students.map((pizza) => {
+    return pizza.name
+});                                 //same as above function, pizza is just name of argument (which doesn't matter)
+console.log(names);
+```
+# REST function
+```javascript
+function add(){
+    console.log("arguments object:", arguments);//allows you to access add arguments as an array in argument's object
+
+     var numbers = Array.prototype.slice.call(arguments); //converting 'arguments' in to an array, .call is calling slice function
+
+     var sum = 0;
+
+     numbers.forEach(function(number) {      //.forEach says for every element in array, do what function says to it
+        sum += number;                      //says add sum (which starts at 0) to the value of each number, and continue doing that to all the numbers
+    });
+    return sum;
+}
+console.log(add(1,2,3,4,5,6,7,8)); //calls whatever is being returned in function, regardless of whether it's explicitly called
+
+
+ let add = (...numbers) => {
+    console.log("rest parameters", numbers);
+
+     let sum = 0;
+
+     numbers.forEach(function (number){
+        sum+=number;
+    });
+    return sum;
+}
+
+ console.log(add(1,2,3,4,5,6,7,8));//rest parameter
+```
+# REST example all on one line
+```javascript
+let add = (...numbers) => numbers.reduce((sum,number) => sum += number, 0);
+
+ function addStuff(x, y, ...z){
+    return (x+y)*z.length //returns 12 b/c does 1+2(*6) (b/c 6=array length in argument below))
+}
+
+ console.log(addStuff(1,2,"hello","world",true,99));
+
+
+ ```
+
+ # Spread
+```javascript
+let spreadEx = (item) => {
+    let spreadArray = [...item]
+    console.log(spreadArray);
+    return spreadArray
+}
+
+ spreadEx("Hello World")
+//["h","e","l","l","o","","w","o","r","l,"d]
+
+ restEx("hello","world")
+//["hello", "world"]
+
+
+ var students = ["Julian","AJ","Matt"];
+var x = students[0];
+var y = students[1];
+var z = students[2];
+
+ console.log(x,y,z);
+```
+# Destructure 
+```javascript
+let students = ["Julian","AJ","Matt"];
+let[x,y,z] = students               //will return all 3
+let [ ,y,z] = students              //will return AJ & Matt
+let[x, ,z] = students               //will return Julian & Matt
+
+ let [x, ...rest] = students         //rest operator=...(+term), seperates the indexed items not listed explicitly in array variable
+console.log(x, rest);               //returns Julian ["AJ","Matt"]
+
+ //try w/ a function
+
+ let completedHomework = () => {
+    return ["Julian","AJ","Matt"]
+}
+
+ let[x,y,z] = completedHomework();
+
+ console.log(x,y,z);
+
+ let car ={
+    make: 'Honda'
+}
+
+ function something({make, year=2001}) { //by using { } inside parameter, it tells the argument to take the 'make' in our parameter from the 'car' object, and return that value of the make property along with the default year=2001 parameter
+    console.log(make,year);
+}
+
+ something(car);
+
+ ```
+# Object Orientated Keywords
+
+```javascript
+function Person (name,job){         //<--constructor function
+    this.name = name;
+    this.job = job;
+}
+
+ Person.prototype.getName = function getName(){  //calls only the name parameter
+    return this.name;
+}
+
+ var goodGuy = new Person ("Aang","Airbender");  //'new' keyword allows the constructor function to be used, and places the 'new Person' statement in the parameters of name, creating a new object
+console.log(goodGuy.getName());
+
+ //cleaner way
+
+ class Person{
+    constructor (name,job){
+        this.name = name;
+        this.job = job;
+    }
+    getName(){
+        return this.name;
+    }
+    getJob(){
+        return this.job;
+    }
+}
+
+ class SuperHero extends Person {
+    constructor (name, heroName, superPower){
+        super(name);
+        this.heroName = heroName;
+        this.superPower = superPower;
+    }
+    secretIdentity(){
+        return `${this.heroName} is really ${this.name}!`
+    }
+}
+
+ let batman = new SuperHero("Bruce Wayne","Batman");
+console.log(batman.secretIdentity())
+```
+# Getters & Setters
+```javascript
+class Person{               
+    constructor (name){
+        this.name = name;
+    }
+    set name (name){
+        this._name = name;
+    }
+    get name(){
+        return this._name
+    }
+}
+
+ let goodGuy = new Person('Jim Gordon');
+console.log(goodGuy.name);  //returns 'Jim Gordon'
+goodGuy.name="James Gordon";
+console.log(goodGuy.name);//returns 'James Gordon
+
+
+ let student = {name: "A-aron"};
+let status = new Map();
+
+ student.set(name , "A-aron");
+status.set("feeling", "churlish");
+console.log(status.get(name));
+console.log(status.get("feeling"))
+```
